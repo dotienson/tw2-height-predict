@@ -1,0 +1,5 @@
+{
+  "name": "Dự đoán chiều cao TW Mark II",
+  "description": "Ứng dụng dự đoán chiều cao trưởng thành bằng phương pháp Tanner-Whitehouse Mark II (TW Mark II) dựa trên tuổi xương và các chỉ số tăng trưởng.",
+  "requestFramePermissions": []
+}
