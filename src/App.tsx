@@ -18,7 +18,7 @@ const translations = {
     subtitle: '',
     author: 'ThS.BS. Đỗ Tiến Sơn © 2026',
     warningTitle: 'LƯU Ý KHI SỬ DỤNG',
-    warningText: 'Ứng dụng đang thử nghiệm\nChỉ sủ dụng tham khảo nội bộ',
+    warningText: 'Ứng dụng đang thử nghiệm\nLưu hành nội bộ',
     unlock: 'Đồng ý & Bắt đầu',
     basicInfo: 'Thông tin cơ bản',
     gender: 'Giới tính',
@@ -59,7 +59,8 @@ const translations = {
     errorGeneral: 'Có lỗi xảy ra khi tính toán. Vui lòng kiểm tra lại dữ liệu nhập.',
     highDiffWarning: 'Độ chênh so với MPH lớn, cần kiểm tra lại!',
     conclusionText: (pred: string, sd: string, mph: string) => `Nếu xét theo phương pháp Tanner Whitehouse Mark II, chiều cao dự đoán khi trưởng thành là ${pred} +/- ${sd}cm (MPH ${mph}cm +/- 7cm). Kết quả dựa theo công thức toán học, không mang tính tiên đoán, phục vụ theo dõi lâm sàng.`,
-    warnHeight: 'Chiều cao nên trong khoảng 50-190 cm',
+    warnHeight: 'Chiều cao nên trong khoảng 50-200 cm',
+    warnParentsHeight: 'Chiều cao bố mẹ nên trong khoảng 50-200 cm',
     warnAge: 'Tuổi thực nên trong khoảng 1-20 năm',
     warnBoneAge: 'Tuổi xương nên trong khoảng 1-19 năm',
     warnMenarche: 'Tuổi có kinh nên trong khoảng 9-16 năm',
@@ -71,7 +72,7 @@ const translations = {
     subtitle: '',
     author: 'ThS.BS. Đỗ Tiến Sơn © 2026',
     warningTitle: 'USAGE NOTICE',
-    warningText: 'Application is in testing phase\nFor internal reference only.',
+    warningText: 'Application is in testing phase\nInternal use only.',
     unlock: 'Agree & Start',
     basicInfo: 'Basic Information',
     gender: 'Gender',
@@ -112,7 +113,8 @@ const translations = {
     errorGeneral: 'An error occurred during calculation. Please check your input.',
     highDiffWarning: 'Large difference from MPH, please double check!',
     conclusionText: (pred: string, sd: string, mph: string) => `Based on the Tanner Whitehouse Mark II method, the predicted adult height is ${pred} +/- ${sd}cm (MPH ${mph}cm +/- 7cm). This result is based on a mathematical formula, is not predictive, and is for clinical monitoring purposes.`,
-    warnHeight: 'Height should be between 50-190 cm',
+    warnHeight: 'Height should be between 50-200 cm',
+    warnParentsHeight: 'Parents height should be between 50-200 cm',
     warnAge: 'Chronological age should be between 1-20 years',
     warnBoneAge: 'Bone age should be between 1-19 years',
     warnMenarche: 'Menarche age should be between 9-16 years',
@@ -196,8 +198,13 @@ export default function App() {
     const AM = parseFloat(ageAtMenarche);
     const H_prev = parseFloat(previousHeight);
     const RUS_prev = parseFloat(previousBoneAgeRUS);
+    const FH = parseFloat(fatherHeight);
+    const MH = parseFloat(motherHeight);
 
-    if (currentHeight && (isNaN(H) || H < 50 || H > 190)) w.push(t.warnHeight);
+    if (currentHeight && (isNaN(H) || H < 50 || H > 200)) w.push(t.warnHeight);
+    if ((fatherHeight && (isNaN(FH) || FH < 50 || FH > 200)) || (motherHeight && (isNaN(MH) || MH < 50 || MH > 200))) {
+      w.push(t.warnParentsHeight);
+    }
     if (chronologicalAge && (isNaN(CA) || CA < 1 || CA > 20)) w.push(t.warnAge);
     if (boneAgeRUS && (isNaN(RUS) || RUS < 1 || RUS > 19)) w.push(t.warnBoneAge);
     
@@ -214,7 +221,7 @@ export default function App() {
       }
     }
     return w;
-  }, [currentHeight, chronologicalAge, boneAgeRUS, gender, isPostMenarche, ageAtMenarche, hasPreviousData, previousHeight, previousBoneAgeRUS, t]);
+  }, [currentHeight, chronologicalAge, boneAgeRUS, gender, isPostMenarche, ageAtMenarche, hasPreviousData, previousHeight, previousBoneAgeRUS, fatherHeight, motherHeight, t]);
 
   // Auto-calculate when inputs change
   useEffect(() => {
@@ -470,8 +477,8 @@ export default function App() {
                             <label className="block text-xs text-slate-500 mb-1">Tháng</label>
                             <input
                               type="number"
-                              min="0"
-                              max="11"
+                              min="1"
+                              max="12"
                               value={manualAgeMonths}
                               onChange={(e) => setManualAgeMonths(e.target.value)}
                               className="focus:ring-slate-500 focus:border-slate-500 block w-full sm:text-sm border-slate-300 rounded-lg py-2 border px-3"
